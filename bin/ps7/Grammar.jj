@@ -55,22 +55,25 @@
 void statement() :{  Token t;
   Token type;
   String etype;}{  
-  
-  (
-     t = < VAR > < EQUALS > etype = exp() ";"    {      if (variables.get(t.image) == null)      {          throw new TypeException("Undeclared variable: " + t.image);      }
+  (     
+     t = < VAR > < EQUALS > etype = Exp() ";"      
+    {
+      if (variables.get(t.image) == null)
+      {
+          throw new TypeException("Undeclared variable: " + t.image);
+      }
 
       if (!types.get(t.image).equals(etype))
 	  {
 		  throw new TypeException("Type mismatch");
       }
-		      char reg = variables.get(t.image);      System.out.println("s" + reg + " ");    }  )
-| 
-  (     
-   etype = exp() ";"        
+		
+      char reg = variables.get(t.image);
+      System.out.println("s" + reg + " ");
+    }
   )
-
 |     (
-    (type = < INTTYPE > | type = < STRINGTYPE > | type = < BOOLEANTYPE >)      t = < VAR > < EQUALS > etype = exp() ";"
+    (type = < INTTYPE > | type = < STRINGTYPE > | type = < BOOLEANTYPE >)      t = < VAR > < EQUALS > etype = Exp() ";"
     {
       if (variables.get(t.image) == null)
       {
@@ -93,46 +96,63 @@ void statement() :{  Token t;
       }
     }
   )
-|	  (    < PRINT > exp() ";"    {      System.out.println("n ");    }  )
+|	  (    < PRINT > Exp() ";"    {      System.out.println("n ");    }  )
 |
 (
   < NEWLINE > ";"
-  {	System.out.println("");
-  })}String exp() :{  Token t;
-  String type5, type6;}{  type5 = term()  (    (      t = < PLUS >    | t = < MINUS >        )    type6 = term()    {      System.out.print(t.image + " ");
-      checkInt(type5);
-	  checkInt(type6);
-    }
-  |      (
-      t = < LTHEN >        )
-    type6 = term()
-    {		System.out.print("sa sb [false] la lb [sa[true]] sa >a ");		
-		checkInt(type5);		
-		checkInt(type6);
+  {	System.out.print("[] n");
+  })}
+String Exp() :
+{
+  Token t;
+  String type7, type8;
+}
+{
+  type7 = exp()  
+  (     
+    (
+      t = < LTHEN >    
+    )
+    type8 = exp()
+    {
+		System.out.print("sa sb [false] la lb [sa[true]] sa <a ");		
+		checkInt(type7);		
+		checkInt(type8);
 		return "boolean";
     }
   |     
     (
-      t = < GTHEN >    
+      t = < GTHEN > 
     )
-    type6 = term()
+    type8 = exp()
     {
-		System.out.print("sa sb [false] la lb [sa[true]] sa <a ");
-		checkInt(type5);
-		checkInt(type6);
+		System.out.print("sa sb [false] la lb [sa[true]] sa >a ");
+		checkInt(type7);
+		checkInt(type8);
 		return "boolean";
     }
   |     
     (
       t = < CMPEQUALS >    
     )
-    type6 = term()
+    type8 = exp()
     {
 		System.out.print("sa sb [false] la lb [sa[true]] sa =a ");
-		checkBoolInt(type5);
-		checkBoolInt(type6);		
+		checkBoolInt(type7);
+		checkBoolInt(type8);
 		return "boolean";
-    }      )*
+    }
+  )*
+  {
+    return type7;
+  }
+}
+String exp() :{  Token t;
+  String type5, type6;}{  type5 = term()  (    (      t = < PLUS >    | t = < MINUS >        )    type6 = term()    {      System.out.print(t.image + " ");
+      checkInt(type5);
+	  checkInt(type6);
+    }
+    )*
   {    return type5;
   }}String term() :{  Token t;
   String type3, type4;}{  type3 = factor()  (    (      t = < MULTIPLY >    | t = < DIVIDE >    )    type4 = factor()    {      System.out.print(t.image + " ");
@@ -141,7 +161,7 @@ void statement() :{  Token t;
   {
     return type3;  }}String factor() :{
   String type2;
-}{  "-"  {    System.out.print("_");  }  type2 = element()
+}{  "-"  {    System.out.print("_1 * ");  }  type2 = element()
   {
     checkInt(type2);
     return "int";  }| type2 = element()
@@ -164,9 +184,7 @@ void statement() :{  Token t;
 	  System.out.print(bool + " sa [true] la 0 [sa [false]] sa =a ");	  		
 	  return "boolean";
 	}
-|   t = < VAR >  {    Character reg = variables.get(t.image);    if (reg == null)    {
-      throw new RuntimeException("Undefined variable " + t.image);    }    else    {      System.out.print("l" + reg + " ");
-      return types.get(t.image);    }  }
+|   t = < VAR >  {    Character reg = variables.get(t.image);    if (reg == null)    {      throw new RuntimeException("Undefined variable " + t.image);    }    else    {      System.out.print("l" + reg + " ");      return types.get(t.image);    }  }
 | "(" type1 = exp() ")"
   {	return type1;
   }  }

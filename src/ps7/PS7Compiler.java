@@ -59,17 +59,12 @@ public class PS7Compiler implements PS7CompilerConstants {
     label_1:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case MINUS:
       case INTTYPE:
       case STRINGTYPE:
       case BOOLEANTYPE:
-      case BOOLEAN:
       case PRINT:
       case NEWLINE:
-      case CONSTANT:
-      case VAR:
-      case STRING:
-      case 25:{
+      case VAR:{
         ;
         break;
         }
@@ -88,7 +83,7 @@ public class PS7Compiler implements PS7CompilerConstants {
     case VAR:{
       t = jj_consume_token(VAR);
       jj_consume_token(EQUALS);
-      etype = exp();
+      etype = Exp();
       jj_consume_token(24);
 if (variables.get(t.image) == null)
       {
@@ -102,15 +97,6 @@ if (variables.get(t.image) == null)
 
       char reg = variables.get(t.image);
       System.out.println("s" + reg + " ");
-      break;
-      }
-    case MINUS:
-    case BOOLEAN:
-    case CONSTANT:
-    case STRING:
-    case 25:{
-      etype = exp();
-      jj_consume_token(24);
       break;
       }
     case INTTYPE:
@@ -136,7 +122,7 @@ if (variables.get(t.image) == null)
       }
       t = jj_consume_token(VAR);
       jj_consume_token(EQUALS);
-      etype = exp();
+      etype = Exp();
       jj_consume_token(24);
 if (variables.get(t.image) == null)
       {
@@ -163,7 +149,7 @@ if (variables.get(t.image) == null)
       }
     case PRINT:{
       jj_consume_token(PRINT);
-      exp();
+      Exp();
       jj_consume_token(24);
 System.out.println("n ");
       break;
@@ -171,7 +157,7 @@ System.out.println("n ");
     case NEWLINE:{
       jj_consume_token(NEWLINE);
       jj_consume_token(24);
-System.out.println("");
+System.out.print("[] n");
       break;
       }
     default:
@@ -181,14 +167,12 @@ System.out.println("");
     }
   }
 
-  final public String exp() throws ParseException {Token t;
-  String type5, type6;
-    type5 = term();
+  final public String Exp() throws ParseException {Token t;
+  String type7, type8;
+    type7 = exp();
     label_2:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case PLUS:
-      case MINUS:
       case GTHEN:
       case LTHEN:
       case CMPEQUALS:{
@@ -200,60 +184,76 @@ System.out.println("");
         break label_2;
       }
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case PLUS:
-      case MINUS:{
-        switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-        case PLUS:{
-          t = jj_consume_token(PLUS);
-          break;
-          }
-        case MINUS:{
-          t = jj_consume_token(MINUS);
-          break;
-          }
-        default:
-          jj_la1[4] = jj_gen;
-          jj_consume_token(-1);
-          throw new ParseException();
-        }
-        type6 = term();
-System.out.print(t.image + " ");
-      checkInt(type5);
-          checkInt(type6);
-        break;
-        }
       case LTHEN:{
         t = jj_consume_token(LTHEN);
-        type6 = term();
-System.out.print("sa sb [false] la lb [sa[true]] sa >a ");
-                checkInt(type5);
-                checkInt(type6);
+        type8 = exp();
+System.out.print("sa sb [false] la lb [sa[true]] sa <a ");
+                checkInt(type7);
+                checkInt(type8);
                 {if ("" != null) return "boolean";}
         break;
         }
       case GTHEN:{
         t = jj_consume_token(GTHEN);
-        type6 = term();
-System.out.print("sa sb [false] la lb [sa[true]] sa <a ");
-                checkInt(type5);
-                checkInt(type6);
+        type8 = exp();
+System.out.print("sa sb [false] la lb [sa[true]] sa >a ");
+                checkInt(type7);
+                checkInt(type8);
                 {if ("" != null) return "boolean";}
         break;
         }
       case CMPEQUALS:{
         t = jj_consume_token(CMPEQUALS);
-        type6 = term();
+        type8 = exp();
 System.out.print("sa sb [false] la lb [sa[true]] sa =a ");
-                checkBoolInt(type5);
-                checkBoolInt(type6);
+                checkBoolInt(type7);
+                checkBoolInt(type8);
                 {if ("" != null) return "boolean";}
         break;
         }
       default:
-        jj_la1[5] = jj_gen;
+        jj_la1[4] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
+    }
+{if ("" != null) return type7;}
+    throw new Error("Missing return statement in function");
+  }
+
+  final public String exp() throws ParseException {Token t;
+  String type5, type6;
+    type5 = term();
+    label_3:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+      case PLUS:
+      case MINUS:{
+        ;
+        break;
+        }
+      default:
+        jj_la1[5] = jj_gen;
+        break label_3;
+      }
+      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+      case PLUS:{
+        t = jj_consume_token(PLUS);
+        break;
+        }
+      case MINUS:{
+        t = jj_consume_token(MINUS);
+        break;
+        }
+      default:
+        jj_la1[6] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+      type6 = term();
+System.out.print(t.image + " ");
+      checkInt(type5);
+          checkInt(type6);
     }
 {if ("" != null) return type5;}
     throw new Error("Missing return statement in function");
@@ -262,7 +262,7 @@ System.out.print("sa sb [false] la lb [sa[true]] sa =a ");
   final public String term() throws ParseException {Token t;
   String type3, type4;
     type3 = factor();
-    label_3:
+    label_4:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case MULTIPLY:
@@ -271,8 +271,8 @@ System.out.print("sa sb [false] la lb [sa[true]] sa =a ");
         break;
         }
       default:
-        jj_la1[6] = jj_gen;
-        break label_3;
+        jj_la1[7] = jj_gen;
+        break label_4;
       }
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case MULTIPLY:{
@@ -284,7 +284,7 @@ System.out.print("sa sb [false] la lb [sa[true]] sa =a ");
         break;
         }
       default:
-        jj_la1[7] = jj_gen;
+        jj_la1[8] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -301,7 +301,7 @@ System.out.print(t.image + " ");
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case MINUS:{
       jj_consume_token(MINUS);
-System.out.print("_");
+System.out.print("_1 * ");
       type2 = element();
 checkInt(type2);
     {if ("" != null) return "int";}
@@ -317,7 +317,7 @@ checkInt(type2);
       break;
       }
     default:
-      jj_la1[8] = jj_gen;
+      jj_la1[9] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -371,7 +371,7 @@ Character reg = variables.get(t.image);
       break;
       }
     default:
-      jj_la1[9] = jj_gen;
+      jj_la1[10] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -387,13 +387,13 @@ Character reg = variables.get(t.image);
   public Token jj_nt;
   private int jj_ntk;
   private int jj_gen;
-  final private int[] jj_la1 = new int[10];
+  final private int[] jj_la1 = new int[11];
   static private int[] jj_la1_0;
   static {
       jj_la1_init_0();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x2afe080,0xe000,0x2afe080,0x1cc0,0xc0,0x1cc0,0x300,0x300,0x2a90080,0x2a90000,};
+      jj_la1_0 = new int[] {0x26e000,0xe000,0x26e000,0x1c00,0x1c00,0xc0,0xc0,0x300,0x300,0x2a90080,0x2a90000,};
    }
 
   /** Constructor with InputStream. */
@@ -407,7 +407,7 @@ Character reg = variables.get(t.image);
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 10; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 11; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -421,7 +421,7 @@ Character reg = variables.get(t.image);
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 10; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 11; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -431,7 +431,7 @@ Character reg = variables.get(t.image);
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 10; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 11; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -441,7 +441,7 @@ Character reg = variables.get(t.image);
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 10; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 11; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -450,7 +450,7 @@ Character reg = variables.get(t.image);
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 10; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 11; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -459,7 +459,7 @@ Character reg = variables.get(t.image);
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 10; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 11; i++) jj_la1[i] = -1;
   }
 
   private Token jj_consume_token(int kind) throws ParseException {
@@ -515,7 +515,7 @@ Character reg = variables.get(t.image);
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 11; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {

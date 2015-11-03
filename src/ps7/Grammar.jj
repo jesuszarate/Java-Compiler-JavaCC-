@@ -17,6 +17,14 @@
     {      throw new TypeException("Expected int, received " + type);
     }
   }
+  //if(!(type.equals("int") && !(type.equals("boolean"))))
+  public void checkBoolInt(String type)
+  {	
+	if(type.equals("string"))
+	{		throw new TypeException("Expected int or boolean, received " + type);
+	}
+  }
+    
     public static void main(String args [])  {    PS7Compiler parser = new PS7Compiler(System.in);    try    {      parser.program();    }
     catch (TypeException e)
     {      System.err.println(e.getMessage());
@@ -33,7 +41,10 @@
  {   public TypeException (String message)
    {     super(message);
    }
- }PARSER_END(PS7Compiler)/************************ Regular expressions that define tokens ***********************/SKIP :{  " "| "\r"| "\t"| "\n"}TOKEN : /* OPERATORS */{  < EQUALS : "=" >| < PLUS : "+" >| < MINUS : "-" >| < MULTIPLY : "*" >| < DIVIDE : "/" >}TOKEN :{
+ }PARSER_END(PS7Compiler)/************************ Regular expressions that define tokens ***********************/SKIP :{  " "| "\r"| "\t"| "\n"}TOKEN : /* OPERATORS */{  < EQUALS : "=" >| < PLUS : "+" >| < MINUS : "-" >| < MULTIPLY : "*" >| < DIVIDE : "/" >
+| < GTHEN : ">" >
+| < LTHEN : "<" >
+| < CMPEQUALS : "==" >}TOKEN :{
   < INTTYPE : "int" >
 | < STRINGTYPE : "string" >
 | < BOOLEANTYPE : "boolean" >
@@ -43,14 +54,22 @@
 }{  (    statement()  )*}
 void statement() :{  Token t;
   Token type;
-  String etype;}{  (    t = < VAR > < EQUALS > etype = exp() ";"    {      if (variables.get(t.image) == null)      {          throw new TypeException("Undeclared variable: " + t.image);      }
+  String etype;}{  
+  
+  (
+     t = < VAR > < EQUALS > etype = exp() ";"    {      if (variables.get(t.image) == null)      {          throw new TypeException("Undeclared variable: " + t.image);      }
 
       if (!types.get(t.image).equals(etype))
 	  {
 		  throw new TypeException("Type mismatch");
       }
 		      char reg = variables.get(t.image);      System.out.println("s" + reg + " ");    }  )
-|   (
+| 
+  (     
+   etype = exp() ";"        
+  )
+
+|     (
     (type = < INTTYPE > | type = < STRINGTYPE > | type = < BOOLEANTYPE >)      t = < VAR > < EQUALS > etype = exp() ";"
     {
       if (variables.get(t.image) == null)
@@ -80,10 +99,40 @@ void statement() :{  Token t;
   < NEWLINE > ";"
   {	System.out.println("");
   })}String exp() :{  Token t;
-  String type5, type6;}{  type5 = term()  (    (      t = < PLUS >    | t = < MINUS >    )    type6 = term()    {      System.out.print(t.image + " ");
+  String type5, type6;}{  type5 = term()  (    (      t = < PLUS >    | t = < MINUS >        )    type6 = term()    {      System.out.print(t.image + " ");
       checkInt(type5);
 	  checkInt(type6);
-    }  )*
+    }
+  |      (
+      t = < LTHEN >        )
+    type6 = term()
+    {		System.out.print("sa sb [false] la lb [sa[true]] sa >a ");		
+		checkInt(type5);		
+		checkInt(type6);
+		return "boolean";
+    }
+  |     
+    (
+      t = < GTHEN >    
+    )
+    type6 = term()
+    {
+		System.out.print("sa sb [false] la lb [sa[true]] sa <a ");
+		checkInt(type5);
+		checkInt(type6);
+		return "boolean";
+    }
+  |     
+    (
+      t = < CMPEQUALS >    
+    )
+    type6 = term()
+    {
+		System.out.print("sa sb [false] la lb [sa[true]] sa =a ");
+		checkBoolInt(type5);
+		checkBoolInt(type6);		
+		return "boolean";
+    }      )*
   {    return type5;
   }}String term() :{  Token t;
   String type3, type4;}{  type3 = factor()  (    (      t = < MULTIPLY >    | t = < DIVIDE >    )    type4 = factor()    {      System.out.print(t.image + " ");

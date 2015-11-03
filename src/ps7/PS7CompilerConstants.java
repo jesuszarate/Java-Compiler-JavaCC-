@@ -21,27 +21,33 @@ public interface PS7CompilerConstants {
   /** RegularExpression Id. */
   int DIVIDE = 9;
   /** RegularExpression Id. */
-  int INTTYPE = 10;
+  int GTHEN = 10;
   /** RegularExpression Id. */
-  int STRINGTYPE = 11;
+  int LTHEN = 11;
   /** RegularExpression Id. */
-  int BOOLEANTYPE = 12;
+  int CMPEQUALS = 12;
   /** RegularExpression Id. */
-  int BOOLEAN = 13;
+  int INTTYPE = 13;
   /** RegularExpression Id. */
-  int PRINT = 14;
+  int STRINGTYPE = 14;
   /** RegularExpression Id. */
-  int NEWLINE = 15;
+  int BOOLEANTYPE = 15;
   /** RegularExpression Id. */
-  int CONSTANT = 16;
+  int BOOLEAN = 16;
   /** RegularExpression Id. */
-  int DIGIT = 17;
+  int PRINT = 17;
   /** RegularExpression Id. */
-  int VAR = 18;
+  int NEWLINE = 18;
   /** RegularExpression Id. */
-  int LETTER = 19;
+  int CONSTANT = 19;
   /** RegularExpression Id. */
-  int STRING = 20;
+  int DIGIT = 20;
+  /** RegularExpression Id. */
+  int VAR = 21;
+  /** RegularExpression Id. */
+  int LETTER = 22;
+  /** RegularExpression Id. */
+  int STRING = 23;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -58,6 +64,9 @@ public interface PS7CompilerConstants {
     "\"-\"",
     "\"*\"",
     "\"/\"",
+    "\">\"",
+    "\"<\"",
+    "\"==\"",
     "\"int\"",
     "\"string\"",
     "\"boolean\"",

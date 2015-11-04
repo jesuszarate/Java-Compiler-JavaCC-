@@ -17,13 +17,18 @@
     {      throw new TypeException("Expected int, received " + type);
     }
   }
-  //if(!(type.equals("int") && !(type.equals("boolean"))))
+  
   public void checkBoolInt(String type)
   {	
 	if(type.equals("string"))
 	{		throw new TypeException("Expected int or boolean, received " + type);
 	}
   }
+  public void checkBools(String type1, String type2)  {
+    if(!type1.equals("boolean") && (!type2.equals("boolean")))
+    {
+      throw new TypeException("Expected booleans, received " + type1 + " and " + type2);
+    }  }                
     
     public static void main(String args [])  {    PS7Compiler parser = new PS7Compiler(System.in);    try    {      parser.program();    }
     catch (TypeException e)
@@ -50,8 +55,10 @@
 | < BOOLEANTYPE : "boolean" >
 | < BOOLEAN: "true" | "false" >| < PRINT : "print" >
 | < NEWLINE : "newline" >| < CONSTANT : (< DIGIT >)+ >| < #DIGIT : [ "0"-"9" ] >| < VAR : (< LETTER >)+ >| < #LETTER :    [ "a"-"z" ]  | [ "A"-"Z" ] >
-| < STRING: "\"" (~["\"", "[", "]"])* "\"" >}/***************************** Productions that define grammar *******************/void program() :{
-}{  (    statement()  )*}
+| < STRING: "\"" (~["\"", "[", "]"])* "\"" >
+}/***************************** Productions that define grammar *******************/void program() :{
+}{  (    statement()  )*
+  < EOF >}
 void statement() :{  Token t;
   Token type;
   String etype;}{  
@@ -96,7 +103,10 @@ void statement() :{  Token t;
       }
     }
   )
-|	  (    < PRINT > Exp() ";"    {      System.out.println("n ");    }  )
+|	  (    < PRINT > etype = Exp() ";"    {
+      if(etype.equals("boolean"))      {
+        System.out.print(" sa [true] la 0 [sa [false]] sa =a ");
+      }      System.out.println("n ");    }  )
 |
 (
   < NEWLINE > ";"
@@ -115,7 +125,7 @@ String Exp() :
     )
     type8 = exp()
     {
-		System.out.print("sa sb [false] la lb [sa[true]] sa <a ");		
+		System.out.print("sa sb 0 la lb [sa 1] sa <a ");		
 		checkInt(type7);		
 		checkInt(type8);
 		return "boolean";
@@ -126,7 +136,7 @@ String Exp() :
     )
     type8 = exp()
     {
-		System.out.print("sa sb [false] la lb [sa[true]] sa >a ");
+		System.out.print("sa sb 0 la lb [sa 1] sa >a ");
 		checkInt(type7);
 		checkInt(type8);
 		return "boolean";
@@ -137,7 +147,7 @@ String Exp() :
     )
     type8 = exp()
     {
-		System.out.print("sa sb [false] la lb [sa[true]] sa =a ");
+        System.out.print("sa sb 0 la lb [sa 1] sa =a ");
 		checkBoolInt(type7);
 		checkBoolInt(type8);
 		return "boolean";
@@ -181,7 +191,7 @@ String Exp() :
 	{
 	  int bool = t.image.equals("true") ? 1 : 0;
 
-	  System.out.print(bool + " sa [true] la 0 [sa [false]] sa =a ");	  		
+	  System.out.print(bool + " ");	  		
 	  return "boolean";
 	}
 |   t = < VAR >  {    Character reg = variables.get(t.image);    if (reg == null)    {      throw new RuntimeException("Undefined variable " + t.image);    }    else    {      System.out.print("l" + reg + " ");      return types.get(t.image);    }  }

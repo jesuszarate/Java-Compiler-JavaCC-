@@ -19,7 +19,7 @@ public class PS7Compiler implements PS7CompilerConstants {
       throw new TypeException("Expected int, received " + type);
     }
   }
-  //if(!(type.equals("int") && !(type.equals("boolean"))))
+
   public void checkBoolInt(String type)
   {
         if(type.equals("string"))
@@ -27,6 +27,14 @@ public class PS7Compiler implements PS7CompilerConstants {
                 throw new TypeException("Expected int or boolean, received " + type);
         }
   }
+  public void checkBools(String type1, String type2)
+  {
+    if(!type1.equals("boolean") && (!type2.equals("boolean")))
+    {
+      throw new TypeException("Expected booleans, received " + type1 + " and " + type2);
+    }
+  }
+
 
 
   public static void main(String args [])
@@ -74,6 +82,7 @@ public class PS7Compiler implements PS7CompilerConstants {
       }
       statement();
     }
+    jj_consume_token(0);
   }
 
   final public void statement() throws ParseException {Token t;
@@ -149,9 +158,13 @@ if (variables.get(t.image) == null)
       }
     case PRINT:{
       jj_consume_token(PRINT);
-      Exp();
+      etype = Exp();
       jj_consume_token(24);
-System.out.println("n ");
+if(etype.equals("boolean"))
+      {
+        System.out.print(" sa [true] la 0 [sa [false]] sa =a ");
+      }
+      System.out.println("n ");
       break;
       }
     case NEWLINE:{
@@ -187,7 +200,7 @@ System.out.print("[] n");
       case LTHEN:{
         t = jj_consume_token(LTHEN);
         type8 = exp();
-System.out.print("sa sb [false] la lb [sa[true]] sa <a ");
+System.out.print("sa sb 0 la lb [sa 1] sa <a ");
                 checkInt(type7);
                 checkInt(type8);
                 {if ("" != null) return "boolean";}
@@ -196,7 +209,7 @@ System.out.print("sa sb [false] la lb [sa[true]] sa <a ");
       case GTHEN:{
         t = jj_consume_token(GTHEN);
         type8 = exp();
-System.out.print("sa sb [false] la lb [sa[true]] sa >a ");
+System.out.print("sa sb 0 la lb [sa 1] sa >a ");
                 checkInt(type7);
                 checkInt(type8);
                 {if ("" != null) return "boolean";}
@@ -205,7 +218,7 @@ System.out.print("sa sb [false] la lb [sa[true]] sa >a ");
       case CMPEQUALS:{
         t = jj_consume_token(CMPEQUALS);
         type8 = exp();
-System.out.print("sa sb [false] la lb [sa[true]] sa =a ");
+System.out.print("sa sb 0 la lb [sa 1] sa =a ");
                 checkBoolInt(type7);
                 checkBoolInt(type8);
                 {if ("" != null) return "boolean";}
@@ -345,7 +358,7 @@ String dcs = t.image.replaceFirst("\u005c"", "[");
       t = jj_consume_token(BOOLEAN);
 int bool = t.image.equals("true") ? 1 : 0;
 
-          System.out.print(bool + " sa [true] la 0 [sa [false]] sa =a ");
+          System.out.print(bool + " ");
           {if ("" != null) return "boolean";}
       break;
       }

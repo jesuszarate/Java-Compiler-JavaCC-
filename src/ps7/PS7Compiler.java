@@ -72,6 +72,7 @@ public class PS7Compiler implements PS7CompilerConstants {
       case BOOLEANTYPE:
       case PRINT:
       case NEWLINE:
+      case IF:
       case VAR:{
         ;
         break;
@@ -80,11 +81,48 @@ public class PS7Compiler implements PS7CompilerConstants {
         jj_la1[0] = jj_gen;
         break label_1;
       }
-      statement();
+      conditionalStatement();
     }
   }
 
-  final public void statement() throws ParseException {Token t;
+  final public void conditionalStatement() throws ParseException {Token t;
+  Token type;
+  String stype;
+  String iftype, elsetype;
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case IF:{
+      jj_consume_token(IF);
+      jj_consume_token(26);
+      stype = statement();
+      jj_consume_token(27);
+      jj_consume_token(28);
+      iftype = statement();
+      jj_consume_token(29);
+      jj_consume_token(ELSE);
+      jj_consume_token(28);
+      elsetype = statement();
+      jj_consume_token(29);
+checkBool(stype);
+      System.out.println(" Good to go! ");
+      break;
+      }
+    case INTTYPE:
+    case STRINGTYPE:
+    case BOOLEANTYPE:
+    case PRINT:
+    case NEWLINE:
+    case VAR:{
+      statement();
+      break;
+      }
+    default:
+      jj_la1[1] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+  }
+
+  final public String statement() throws ParseException {Token t;
   Token type;
   String etype;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -92,7 +130,7 @@ public class PS7Compiler implements PS7CompilerConstants {
       t = jj_consume_token(VAR);
       jj_consume_token(EQUALS);
       etype = Exp();
-      jj_consume_token(24);
+      jj_consume_token(30);
 if (variables.get(t.image) == null)
       {
           {if (true) throw new TypeException("Undeclared variable: " + t.image);}
@@ -105,6 +143,7 @@ if (variables.get(t.image) == null)
 
       char reg = variables.get(t.image);
       System.out.println("s" + reg + " ");
+      {if ("" != null) return etype;}
       break;
       }
     case INTTYPE:
@@ -124,14 +163,14 @@ if (variables.get(t.image) == null)
         break;
         }
       default:
-        jj_la1[1] = jj_gen;
+        jj_la1[2] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
       t = jj_consume_token(VAR);
       jj_consume_token(EQUALS);
       etype = Exp();
-      jj_consume_token(24);
+      jj_consume_token(30);
 if (variables.get(t.image) == null)
       {
         if (variables.size() >= 26)
@@ -153,30 +192,34 @@ if (variables.get(t.image) == null)
       {
         {if (true) throw new TypeException("Variable already declared: " + t.image);}
       }
+{if ("" != null) return etype;}
       break;
       }
     case PRINT:{
       jj_consume_token(PRINT);
       etype = Exp();
-      jj_consume_token(24);
+      jj_consume_token(30);
 if(etype.equals("boolean"))
       {
         System.out.print(" sa [true] la 0 [sa [false]] sa =a ");
       }
       System.out.println("n ");
+{if ("" != null) return etype;}
       break;
       }
     case NEWLINE:{
       jj_consume_token(NEWLINE);
-      jj_consume_token(24);
+      jj_consume_token(30);
 System.out.print("[] n");
+{if ("" != null) return "void";}
       break;
       }
     default:
-      jj_la1[2] = jj_gen;
+      jj_la1[3] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
+    throw new Error("Missing return statement in function");
   }
 
   final public String Exp() throws ParseException {Token t;
@@ -192,7 +235,7 @@ System.out.print("[] n");
         break;
         }
       default:
-        jj_la1[3] = jj_gen;
+        jj_la1[4] = jj_gen;
         break label_2;
       }
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -224,7 +267,7 @@ System.out.print("sa sb 0 la lb [sa 1] sa =a ");
         break;
         }
       default:
-        jj_la1[4] = jj_gen;
+        jj_la1[5] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -245,7 +288,7 @@ System.out.print("sa sb 0 la lb [sa 1] sa =a ");
         break;
         }
       default:
-        jj_la1[5] = jj_gen;
+        jj_la1[6] = jj_gen;
         break label_3;
       }
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -258,7 +301,7 @@ System.out.print("sa sb 0 la lb [sa 1] sa =a ");
         break;
         }
       default:
-        jj_la1[6] = jj_gen;
+        jj_la1[7] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -283,7 +326,7 @@ System.out.print(t.image + " ");
         break;
         }
       default:
-        jj_la1[7] = jj_gen;
+        jj_la1[8] = jj_gen;
         break label_4;
       }
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -296,7 +339,7 @@ System.out.print(t.image + " ");
         break;
         }
       default:
-        jj_la1[8] = jj_gen;
+        jj_la1[9] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -319,8 +362,8 @@ checkInt(type2);
     {if ("" != null) return "int";}
       break;
       }
-    case 25:{
-      jj_consume_token(25);
+    case 31:{
+      jj_consume_token(31);
       type2 = element();
 checkBool(type2);
           System.out.print(" sa 0 la 0 [sa 1] sa =a");
@@ -337,7 +380,7 @@ checkBool(type2);
       break;
       }
     default:
-      jj_la1[9] = jj_gen;
+      jj_la1[10] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -391,7 +434,7 @@ Character reg = variables.get(t.image);
       break;
       }
     default:
-      jj_la1[10] = jj_gen;
+      jj_la1[11] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -407,13 +450,13 @@ Character reg = variables.get(t.image);
   public Token jj_nt;
   private int jj_ntk;
   private int jj_gen;
-  final private int[] jj_la1 = new int[11];
+  final private int[] jj_la1 = new int[12];
   static private int[] jj_la1_0;
   static {
       jj_la1_init_0();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x26e000,0xe000,0x26e000,0x1c00,0x1c00,0xc0,0xc0,0x300,0x300,0x6a90080,0x4a90000,};
+      jj_la1_0 = new int[] {0x8ee000,0x8ee000,0xe000,0x86e000,0x1c00,0x1c00,0xc0,0xc0,0x300,0x300,0x86a10080,0x6a10000,};
    }
 
   /** Constructor with InputStream. */
@@ -427,7 +470,7 @@ Character reg = variables.get(t.image);
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 11; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 12; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -441,7 +484,7 @@ Character reg = variables.get(t.image);
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 11; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 12; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -451,7 +494,7 @@ Character reg = variables.get(t.image);
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 11; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 12; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -461,7 +504,7 @@ Character reg = variables.get(t.image);
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 11; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 12; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -470,7 +513,7 @@ Character reg = variables.get(t.image);
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 11; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 12; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -479,7 +522,7 @@ Character reg = variables.get(t.image);
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 11; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 12; i++) jj_la1[i] = -1;
   }
 
   private Token jj_consume_token(int kind) throws ParseException {
@@ -530,12 +573,12 @@ Character reg = variables.get(t.image);
   /** Generate ParseException. */
   public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[28];
+    boolean[] la1tokens = new boolean[32];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 11; i++) {
+    for (int i = 0; i < 12; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
@@ -544,7 +587,7 @@ Character reg = variables.get(t.image);
         }
       }
     }
-    for (int i = 0; i < 28; i++) {
+    for (int i = 0; i < 32; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

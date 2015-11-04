@@ -54,14 +54,39 @@
 | < STRINGTYPE : "string" >
 | < BOOLEANTYPE : "boolean" >
 | < BOOLEAN: "true" | "false" >| < PRINT : "print" >
-| < NEWLINE : "newline" >| < CONSTANT : (< DIGIT >)+ >| < #DIGIT : [ "0"-"9" ] >| < VAR : (< LETTER >)+ >| < #LETTER :    [ "a"-"z" ]  | [ "A"-"Z" ] >
+| < NEWLINE : "newline" >
+| < IF : "if" >
+| < ELSE : "else" >| < CONSTANT : (< DIGIT >)+ >| < #DIGIT : [ "0"-"9" ] >| < VAR : (< LETTER >)+ >| < #LETTER :    [ "a"-"z" ]  | [ "A"-"Z" ] >
 | < STRING: "\"" (~["\"", "[", "]"])* "\"" >
 }/***************************** Productions that define grammar *******************/void program() :{
-}{  (    statement()  )*  }
-void statement() :{  Token t;
+}{  (    conditionalStatement()      )*
+}
+void conditionalStatement() :
+{  Token t;
   Token type;
-  String etype;}{  
+  String stype;
+  String iftype, elsetype;     
+}
+{
   (     
+    < IF > "(" stype = statement() ")"
+    "{" iftype = statement() "}"
+    < ELSE >
+    "{" elsetype = statement() "}"
+    {
+      checkBool(stype);
+      System.out.println(" Good to go! ");     
+    }
+  )
+  |
+  (
+    statement()
+  )
+}
+
+String statement() :{  Token t;
+  Token type;
+  String etype;}{        (     
      t = < VAR > < EQUALS > etype = Exp() ";"      
     {
       if (variables.get(t.image) == null)
@@ -76,7 +101,8 @@ void statement() :{  Token t;
 		
       char reg = variables.get(t.image);
       System.out.println("s" + reg + " ");
-    }
+      return etype;
+    }    
   )
 |     (
     (type = < INTTYPE > | type = < STRINGTYPE > | type = < BOOLEANTYPE >)      t = < VAR > < EQUALS > etype = Exp() ";"
@@ -100,17 +126,24 @@ void statement() :{  Token t;
       else
       {        throw new TypeException("Variable already declared: " + t.image);
       }
-    }
+    }    
   )
+  {
+    return etype;  }
 |	  (    < PRINT > etype = Exp() ";"    {
       if(etype.equals("boolean"))      {
         System.out.print(" sa [true] la 0 [sa [false]] sa =a ");
-      }      System.out.println("n ");    }  )
+      }      System.out.println("n ");    }     )
+  {
+    return etype;  }
 |
 (
   < NEWLINE > ";"
   {	System.out.print("[] n");
-  })}
+  })
+{
+  return "void";}}
+
 String Exp() :
 {
   Token t;

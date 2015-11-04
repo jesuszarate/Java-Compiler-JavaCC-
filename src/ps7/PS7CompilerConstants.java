@@ -39,15 +39,19 @@ public interface PS7CompilerConstants {
   /** RegularExpression Id. */
   int NEWLINE = 18;
   /** RegularExpression Id. */
-  int CONSTANT = 19;
+  int IF = 19;
   /** RegularExpression Id. */
-  int DIGIT = 20;
+  int ELSE = 20;
   /** RegularExpression Id. */
-  int VAR = 21;
+  int CONSTANT = 21;
   /** RegularExpression Id. */
-  int LETTER = 22;
+  int DIGIT = 22;
   /** RegularExpression Id. */
-  int STRING = 23;
+  int VAR = 23;
+  /** RegularExpression Id. */
+  int LETTER = 24;
+  /** RegularExpression Id. */
+  int STRING = 25;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -73,15 +77,19 @@ public interface PS7CompilerConstants {
     "<BOOLEAN>",
     "\"print\"",
     "\"newline\"",
+    "\"if\"",
+    "\"else\"",
     "<CONSTANT>",
     "<DIGIT>",
     "<VAR>",
     "<LETTER>",
     "<STRING>",
-    "\";\"",
-    "\"!\"",
     "\"(\"",
     "\")\"",
+    "\"{\"",
+    "\"}\"",
+    "\";\"",
+    "\"!\"",
   };
 
 }

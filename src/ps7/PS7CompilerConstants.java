@@ -84,11 +84,11 @@ public interface PS7CompilerConstants {
     "<VAR>",
     "<LETTER>",
     "<STRING>",
-    "\"(\"",
-    "\")\"",
     "\"{\"",
     "\"}\"",
     "\";\"",
+    "\"(\"",
+    "\")\"",
     "\"!\"",
   };
 

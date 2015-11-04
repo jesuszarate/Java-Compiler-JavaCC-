@@ -24,10 +24,10 @@
 	{		throw new TypeException("Expected int or boolean, received " + type);
 	}
   }
-  public void checkBools(String type1, String type2)  {
-    if(!type1.equals("boolean") && (!type2.equals("boolean")))
+  public void checkBool(String type)  {
+    if(!type.equals("boolean"))
     {
-      throw new TypeException("Expected booleans, received " + type1 + " and " + type2);
+      throw new TypeException("Expected boolean, received " + type);
     }  }                
     
     public static void main(String args [])  {    PS7Compiler parser = new PS7Compiler(System.in);    try    {      parser.program();    }
@@ -173,7 +173,15 @@ String Exp() :
 }{  "-"  {    System.out.print("_1 * ");  }  type2 = element()
   {
     checkInt(type2);
-    return "int";  }| type2 = element()
+    return "int";  }
+|
+	"!"
+	type2 = element()
+	{	  
+	  checkBool(type2);
+	  System.out.print(" sa 0 la 0 [sa 1] sa =a");
+	  return "boolean";
+	}| type2 = element()
   {	return type2;
   }}String element() :{  Token t;
   String type1;}{  t = < CONSTANT >  {    System.out.print(t.image + " ");
@@ -194,6 +202,6 @@ String Exp() :
 	  return "boolean";
 	}
 |   t = < VAR >  {    Character reg = variables.get(t.image);    if (reg == null)    {      throw new RuntimeException("Undefined variable " + t.image);    }    else    {      System.out.print("l" + reg + " ");      return types.get(t.image);    }  }
-| "(" type1 = exp() ")"
+| "(" type1 = Exp() ")"
   {	return type1;
   }  }

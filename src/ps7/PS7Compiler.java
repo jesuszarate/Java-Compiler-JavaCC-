@@ -27,11 +27,11 @@ public class PS7Compiler implements PS7CompilerConstants {
                 throw new TypeException("Expected int or boolean, received " + type);
         }
   }
-  public void checkBools(String type1, String type2)
+  public void checkBool(String type)
   {
-    if(!type1.equals("boolean") && (!type2.equals("boolean")))
+    if(!type.equals("boolean"))
     {
-      throw new TypeException("Expected booleans, received " + type1 + " and " + type2);
+      throw new TypeException("Expected boolean, received " + type);
     }
   }
 
@@ -82,7 +82,6 @@ public class PS7Compiler implements PS7CompilerConstants {
       }
       statement();
     }
-    jj_consume_token(0);
   }
 
   final public void statement() throws ParseException {Token t;
@@ -320,11 +319,19 @@ checkInt(type2);
     {if ("" != null) return "int";}
       break;
       }
+    case 25:{
+      jj_consume_token(25);
+      type2 = element();
+checkBool(type2);
+          System.out.print(" sa 0 la 0 [sa 1] sa =a");
+          {if ("" != null) return "boolean";}
+      break;
+      }
     case BOOLEAN:
     case CONSTANT:
     case VAR:
     case STRING:
-    case 25:{
+    case 26:{
       type2 = element();
 {if ("" != null) return type2;}
       break;
@@ -376,10 +383,10 @@ Character reg = variables.get(t.image);
     }
       break;
       }
-    case 25:{
-      jj_consume_token(25);
-      type1 = exp();
+    case 26:{
       jj_consume_token(26);
+      type1 = Exp();
+      jj_consume_token(27);
 {if ("" != null) return type1;}
       break;
       }
@@ -406,7 +413,7 @@ Character reg = variables.get(t.image);
       jj_la1_init_0();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x26e000,0xe000,0x26e000,0x1c00,0x1c00,0xc0,0xc0,0x300,0x300,0x2a90080,0x2a90000,};
+      jj_la1_0 = new int[] {0x26e000,0xe000,0x26e000,0x1c00,0x1c00,0xc0,0xc0,0x300,0x300,0x6a90080,0x4a90000,};
    }
 
   /** Constructor with InputStream. */
@@ -523,7 +530,7 @@ Character reg = variables.get(t.image);
   /** Generate ParseException. */
   public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[27];
+    boolean[] la1tokens = new boolean[28];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
@@ -537,7 +544,7 @@ Character reg = variables.get(t.image);
         }
       }
     }
-    for (int i = 0; i < 27; i++) {
+    for (int i = 0; i < 28; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

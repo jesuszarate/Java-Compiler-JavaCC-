@@ -79,6 +79,7 @@ public interface PS7CompilerConstants {
     "<LETTER>",
     "<STRING>",
     "\";\"",
+    "\"!\"",
     "\"(\"",
     "\")\"",
   };

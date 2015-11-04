@@ -59,105 +59,33 @@
 | < ELSE : "else" >| < CONSTANT : (< DIGIT >)+ >| < #DIGIT : [ "0"-"9" ] >| < VAR : (< LETTER >)+ >| < #LETTER :    [ "a"-"z" ]  | [ "A"-"Z" ] >
 | < STRING: "\"" (~["\"", "[", "]"])* "\"" >
 }/***************************** Productions that define grammar *******************/void program() :{
-}{  (    conditionalStatement()      )
+}{
+//  	( //		statement()//	)*
+	(
+	  anotherStatement()	)*
+
+< EOF >
 }
-void conditionalStatement() :
-{  Token t;
-  Token type;
-  //String stype;
-  //String iftype, elsetype;     
+void anotherStatement() :
+{	
 }
 {
-//  (     //    < IF > stype = statement() //    "{" iftype = statement() "}"//    < ELSE >//    "{" elsetype = statement() "}"//    {//      checkBool(stype);      //    }//    // lA 0 sa sb 0 la lb [sa 1] sa >a//    // lA n//    // _1 * lA n//  )//  |
   (
-    statement()
-  )*
-}
+    conditionalStatement()  )
+|
+  (
+  	statement()
+  )
+}
 
 String statement() :{  Token t;
   Token type;
   String etype;  
-  String stype, iftype, elsetype;
+  
   }{
-      (
-//        {//			System.out.print("[ ");//        }
-        < IF > stype = statement()
-//        {//          System.out.println(" ]");//        }
-        "{"
-		{
-			System.out.print("[ ");
-        }
-         ( iftype = statement() )*
-        {
-			System.out.println(" ] st");
-		}		
-         "}"        < ELSE >        "{"
-        {
-          System.out.print("[ ");
-        }
-        ( elsetype = statement() )*
-        {
-		  System.out.println(" ] se  ");
 
-		  //t - > if true register
-		  //e - > else register		  
-		  // sm lt lm 0 [sm le] sm =m x
-		}
-        "}"         {
-           System.out.println("sm lt lm 0 [sm le] sm =m x");      		checkBool(stype);
-      		return "Successss!";    	 }            )
-    |     (
-     
-     t = < VAR > (< EQUALS > | < LTHEN > | < GTHEN > ) etype = Exp() ";"     
-     
-    {
-      if (variables.get(t.image) == null)
-      {
-          throw new TypeException("Undeclared variable: " + t.image);
-      }
-
-      if (!types.get(t.image).equals(etype))
-	  {
-		  throw new TypeException("Type mismatch");
-      }
-		
-      char reg = variables.get(t.image);
-      System.out.println("s" + reg + " ");
-      return etype;
-    }    
-  )
-|
-	(
-	  "(" etype = Exp() ")"	)
-	{	  return etype;	}	
-|     (
-    (type = < INTTYPE > | type = < STRINGTYPE > | type = < BOOLEANTYPE >)      t = < VAR > < EQUALS > etype = Exp() ";"
-    {
-      if (variables.get(t.image) == null)
-      {
-        if (variables.size() >= 26)
-        {
-          throw new TypeException("Too many variables; limit is 26");
-        }
-        variables.put(t.image, (char) ('A' + variables.size()));
-		types.put(t.image, type.image);
-
-		if (!type.image.equals(etype))
-		{		  throw new TypeException("Type mismatch: Expected " + type + " instead of "+ etype);
-		}
-		
-		char reg2 = variables.get(t.image);
-        System.out.println("s" + reg2 + " ");
-      }
-      else
-      {        throw new TypeException("Variable already declared: " + t.image);
-      }
-    }    
-  )
-  {
-    return etype;  }
-|
-  (    < PRINT > etype = Exp() ";"    {
+ (	     	     t = < VAR > (< EQUALS > | < LTHEN > | < GTHEN > ) etype = Exp() ";"     	     	    {	      if (variables.get(t.image) == null)	      {	          throw new TypeException("Undeclared variable: " + t.image);	      }	      	      if (!types.get(t.image).equals(etype))		  {			  throw new TypeException("Type mismatch");	      }				      char reg = variables.get(t.image);	      System.out.println("s" + reg + " ");	      return etype;	    }    	  )       
+|   (    < PRINT > etype = Exp() ";"    {
       if(etype.equals("boolean"))      {
         System.out.print(" sa [true] la 0 [sa [false]] sa =a ");
       }      System.out.println("n ");    }     )
@@ -169,7 +97,92 @@ String statement() :{  Token t;
   {	System.out.print("[] n");
   })
 {
-  return "void";}}
+  return "void";}
+}
+
+
+String conditionalStatement() :
+{
+  Token t1;
+  Token type1;
+  String stype;
+  String iftype, elsetype, etype1;     
+}
+{    
+(
+         < IF > "(" stype = Exp() ")"// Make sure to check for the type return as well here.		
+			{
+				System.out.print("[ ");
+				iftype = "";
+	        }
+	    "{"    
+	         ( iftype = statement() )*
+	    "}"
+	        {          
+//	          if (iftype.equals("if"))
+//	      	  {
+//	        	throw new RuntimeException("Cannot have a declaration inside an if statement");
+//	      	  }
+			  System.out.println(" ] st");
+			}		
+         
+        < ELSE >
+        "{"
+	        {
+	          System.out.print("[ ");
+	        }
+	        	(
+	          		elsetype = statement()
+	          	)*
+	        {
+			  System.out.println(" ] se  ");
+			}
+		"}"
+			  //t - > if true register
+			  //e - > else register		  
+			  // sm lt lm 0 [sm le] sm =m x		
+       
+         {
+           System.out.println("sm lt lm 0 [sm le] sm =m x");
+      		checkBool(stype);
+      		//return "if";
+    	 }      
+      )
+      {
+        return "if";
+      }
+    | (
+    (type1= < INTTYPE > | type1= < STRINGTYPE > | type1= < BOOLEANTYPE >)
+      t1 = < VAR > < EQUALS > etype1 = Exp() ";"
+    {
+      if (variables.get(t1.image) == null)
+      {
+        if (variables.size() >= 26)
+        {
+          throw new TypeException("Too many variables; limit is 26");
+        }
+        variables.put(t1.image, (char) ('A' + variables.size()));
+		types.put(t1.image, type1.image);
+
+		if (!type1.image.equals(etype1))
+		{
+		  throw new TypeException("Type mismatch: Expected " + type1+ " instead of "+ etype1);
+		}
+		
+		char reg2 = variables.get(t1.image);
+        System.out.println("s" + reg2 + " ");
+      }
+      else
+      {
+        throw new TypeException("Variable already declared: " + t1.image);
+      }
+    }    
+  )
+  {
+    return etype1;
+  }   
+}
+
 
 String Exp() :
 {
@@ -263,8 +276,6 @@ String Exp() :
 	  return "boolean";
 	}
 |   t = < VAR >  {    Character reg = variables.get(t.image);    if (reg == null)    {      throw new RuntimeException("Undefined variable " + t.image);    }    else    {      System.out.print("l" + reg + " ");      return types.get(t.image);    }  }
-//|//	"{" statement() "}"//	{////	}
-  
 | "(" type1 = Exp() ")"
   {	return type1;
   }  }

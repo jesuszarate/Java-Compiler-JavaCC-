@@ -162,7 +162,7 @@ if(etype.equals("boolean"))
     case NEWLINE:{
       jj_consume_token(NEWLINE);
       jj_consume_token(26);
-System.out.print("[] n");
+System.out.print("[] p n");
       break;
       }
     default:

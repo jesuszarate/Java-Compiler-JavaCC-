@@ -108,7 +108,7 @@ public class PS7Compiler implements PS7CompilerConstants {
     }
   }
 
-  final public String statement() throws ParseException {Token t;
+  final public void statement() throws ParseException {Token t;
   Token type;
   String etype;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -146,7 +146,6 @@ if (variables.get(t.image) == null)
 
               char reg = variables.get(t.image);
               System.out.println("s" + reg + " ");
-              {if ("" != null) return etype;}
       break;
       }
     case PRINT:{
@@ -158,14 +157,12 @@ if(etype.equals("boolean"))
         System.out.print(" sa [true] la 0 [sa [false]] sa =a ");
       }
       System.out.println("n ");
-{if ("" != null) return etype;}
       break;
       }
     case NEWLINE:{
       jj_consume_token(NEWLINE);
       jj_consume_token(26);
 System.out.print("[] n");
-{if ("" != null) return "void";}
       break;
       }
     default:
@@ -173,7 +170,6 @@ System.out.print("[] n");
       jj_consume_token(-1);
       throw new ParseException();
     }
-    throw new Error("Missing return statement in function");
   }
 
   final public String conditionalStatement() throws ParseException {Token t1;
@@ -202,14 +198,10 @@ System.out.print("[ ");
           jj_la1[4] = jj_gen;
           break label_2;
         }
-        iftype = statement();
+        statement();
       }
       jj_consume_token(30);
-//	          if (iftype.equals("if"))
-//	      	  {
-//	        	throw new RuntimeException("Cannot have a declaration inside an if statement");
-//	      	  }
-                          System.out.println(" ] st");
+System.out.println(" ] st");
       jj_consume_token(ELSE);
       jj_consume_token(29);
 System.out.print("[ ");
@@ -226,14 +218,12 @@ System.out.print("[ ");
           jj_la1[5] = jj_gen;
           break label_3;
         }
-        elsetype = statement();
+        statement();
       }
 System.out.println(" ] se  ");
       jj_consume_token(30);
 System.out.println("sm lt lm 0 [sm le] sm =m x");
                 checkBool(stype);
-                //return "if";
-
 {if ("" != null) return "if";}
       break;
       }
@@ -472,7 +462,7 @@ System.out.print(t.image + " ");
       t = jj_consume_token(STRING);
 String dcs = t.image.replaceFirst("\u005c"", "[");
     dcs = dcs.replaceFirst("\u005c"", "]");
-        System.out.println(dcs);
+        System.out.print(dcs);
         {if ("" != null) return "string";}
       break;
       }

@@ -60,7 +60,6 @@
 | < STRING: "\"" (~["\"", "[", "]"])* "\"" >
 }/***************************** Productions that define grammar *******************/void program() :{
 }{
-//  	( //		statement()//	)*
 	(
 	  anotherStatement()	)*
 
@@ -78,26 +77,21 @@ void anotherStatement() :
   )
 }
 
-String statement() :{  Token t;
+void statement() :{  Token t;
   Token type;
   String etype;  
   
   }{
-
- (	     	     t = < VAR > (< EQUALS > | < LTHEN > | < GTHEN > ) etype = Exp() ";"     	     	    {	      if (variables.get(t.image) == null)	      {	          throw new TypeException("Undeclared variable: " + t.image);	      }	      	      if (!types.get(t.image).equals(etype))		  {			  throw new TypeException("Type mismatch");	      }				      char reg = variables.get(t.image);	      System.out.println("s" + reg + " ");	      return etype;	    }    	  )       
+ (	     	     t = < VAR > (< EQUALS > | < LTHEN > | < GTHEN > ) etype = Exp() ";"     	     	    {	      if (variables.get(t.image) == null)	      {	          throw new TypeException("Undeclared variable: " + t.image);	      }	      	      if (!types.get(t.image).equals(etype))		  {			  throw new TypeException("Type mismatch");	      }				      char reg = variables.get(t.image);	      System.out.println("s" + reg + " ");	      	    }    	  )     
 |   (    < PRINT > etype = Exp() ";"    {
       if(etype.equals("boolean"))      {
         System.out.print(" sa [true] la 0 [sa [false]] sa =a ");
       }      System.out.println("n ");    }     )
-  {
-    return etype;  }
 |
 (
   < NEWLINE > ";"
   {	System.out.print("[] n");
   })
-{
-  return "void";}
 }
 
 
@@ -110,19 +104,15 @@ String conditionalStatement() :
 }
 {    
 (
-         < IF > "(" stype = Exp() ")"// Make sure to check for the type return as well here.		
+         < IF > "(" stype = Exp() ")"
 			{
 				System.out.print("[ ");
 				iftype = "";
 	        }
 	    "{"    
-	         ( iftype = statement() )*
+	         ( statement() )*
 	    "}"
-	        {          
-//	          if (iftype.equals("if"))
-//	      	  {
-//	        	throw new RuntimeException("Cannot have a declaration inside an if statement");
-//	      	  }
+	        {
 			  System.out.println(" ] st");
 			}		
          
@@ -131,9 +121,7 @@ String conditionalStatement() :
 	        {
 	          System.out.print("[ ");
 	        }
-	        	(
-	          		elsetype = statement()
-	          	)*
+	        	( statement() )*
 	        {
 			  System.out.println(" ] se  ");
 			}
@@ -145,7 +133,6 @@ String conditionalStatement() :
          {
            System.out.println("sm lt lm 0 [sm le] sm =m x");
       		checkBool(stype);
-      		//return "if";
     	 }      
       )
       {
@@ -264,7 +251,7 @@ String Exp() :
   t = < STRING >
   {
     String dcs = t.image.replaceFirst("\"", "[");
-    dcs = dcs.replaceFirst("\"", "]");	System.out.println(dcs);
+    dcs = dcs.replaceFirst("\"", "]");	System.out.print(dcs);
 	return "string";
   }
 |
